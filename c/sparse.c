@@ -48,7 +48,7 @@ int main()
         printf("enter the value :%d\n", b[i].value);
     }
     if(row1!=row2&&col1!=col2){
-        printf("addition is not possible :(");
+        printf("addition is not possible ");
         return 0;
     }
 
