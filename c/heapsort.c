@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+
 void heapify(int a[],int size,int index);
 void swap(int *a,int *b){
   int temp=*a;
