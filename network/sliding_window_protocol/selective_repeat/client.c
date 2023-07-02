@@ -10,7 +10,7 @@ int no_of_packets;
 int frame_count = 0;
 void display_packet(int *frame_buffer, int window_size)
 {
-    printf("The received frame is 3 with packets :");
+    printf("The received frame  with packets :");
     for (int i = 0; i < window_size; i++)
     {
         if (frame_buffer[i] < no_of_packets)
