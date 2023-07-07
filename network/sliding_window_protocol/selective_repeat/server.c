@@ -64,7 +64,7 @@ void initialize_buffer_with_lost(int *buffer, int size, struct packet_header *he
     {
         if (front == -1 && rear == -1)
         {
-            buffer[i] = (char)packet_no;
+            buffer[i] = packet_no;
             packet_no++;
         }
         else
