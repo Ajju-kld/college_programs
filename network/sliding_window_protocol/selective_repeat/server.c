@@ -111,7 +111,12 @@ void aknowledge(int *ack, int *buffer, int window_size, int fram_no, struct pack
 
 void main(int argc, char *argv[])
 {
-
+	if(argc<2)
+    	{
+    		printf("error in formate example ./<program> <portno>");
+    		exit(0);
+		}
+        
     int control_socket, contol_accept;
     struct sockaddr_in client, control;
 
