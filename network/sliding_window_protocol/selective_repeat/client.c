@@ -25,7 +25,11 @@ void display_packet(int *frame_buffer, int window_size)
 }
 
 void main(int argc, char *argv[])
-{
+{  if(argc<2){
+    
+    printf("error in formate example ./<program> <portno>");
+    exit(0);
+}
 
     int control_sock, control_port, window_size;
     char send_buf[100] = " HI IAM CLIENT ", r_Buf[10000];
