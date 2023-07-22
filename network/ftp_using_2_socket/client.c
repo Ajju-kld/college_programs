@@ -63,7 +63,7 @@ void main(int argc, char *argv[])
         }
         else
         {
-            printf("Invalid command\n");
+            printf("Invalid command\n",command);
         }
     }
     close(csd);

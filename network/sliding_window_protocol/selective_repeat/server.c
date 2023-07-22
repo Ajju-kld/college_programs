@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#define max_frame_count 20
+
 
 int packet_no = 0;
 int front = -1;
