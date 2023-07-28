@@ -14,6 +14,7 @@ void send_file(FILE *fp)
         send_buf[i] = fgetc(fp);
         i++;
     }
+    send_buf[i] = '\0';
 }
 
 void main(int argc, char *argv[])
@@ -29,7 +30,7 @@ void main(int argc, char *argv[])
     FILE *fp, *log;
     int lfd, n, confd, fd, confd2;
     char rBuf[100] = "";
-    log = fopen("server.log", "a");
+
 
     lfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -57,15 +58,15 @@ void main(int argc, char *argv[])
         if (strcmp(rBuf, "get") == 0)
         {
 
-            fprintf(log, "client command: %s\n", rBuf);
+            printf("client command: %s\n", rBuf);
 
             recv(confd, rBuf, sizeof rBuf, 0);
-            fprintf(log, "\nServer received the file to fetch: %s\n", rBuf);
+            printf("\nServer received the file to fetch: %s\n", rBuf);
             fp = fopen(rBuf, "r");
             if (fp == NULL)
             {
                 send(confd, "error", sizeof("error"), 0);
-                fprintf(log, "\nfile %s not found ", rBuf);
+                printf("\nfile %s not found ", rBuf);
             }
             else
             {
@@ -79,40 +80,41 @@ void main(int argc, char *argv[])
 
                 bind(fd, (struct sockaddr *)&data, sizeof(data));
                 listen(fd, 10);
-                fprintf(log, "\nServer ready,waiting for client to connect to data socket\n");
+                printf("\nServer ready,waiting for client to connect to data socket\n");
                 n = sizeof(data_client);
                 confd2 = accept(fd, (struct sockaddr *)&data_client, &n);
-                if (confd == -1)
+                if (confd2 == -1)
                 {
-                    fprintf(log, "Failed to connect the data socket\n");
+                    printf( "Failed to connect the data socket\n");
                     exit(0);
                 }
-                fprintf(log, "\nClient connected to data socket\n");
+                printf("\nClient connected to data socket\n");
 
                 send_file(fp);
 
                 if (send(confd2, send_buf, sizeof(send_buf), 0) == -1)
-                    fprintf(log, "sending failed\n");
+                    printf("sending failed\n");
 
                 else
                 {
                     printf("file send success\n");
-                    fprintf(log, "file send successfully\n");
+                    printf("file send successfully\n");
                 }
-                close(confd2);
-                close(fd);
+            
                 fclose(fp);
             }
         }
+    close(confd2);
+    close(fd);
         if (strcmp(rBuf, "close") == 0)
         {
-            fprintf(log, "\nclient command: %s\n", rBuf);
-            fprintf(log, "\nserver clossed");
-            printf("Client disconnected and server closed\n");
+            printf("\nclient command: %s\n", rBuf);
+            printf("\nserver clossed");
+            printf("\nClient disconnected and server closed\n");
             break;
         }
     }
-
     close(confd);
     close(lfd);
+
 }

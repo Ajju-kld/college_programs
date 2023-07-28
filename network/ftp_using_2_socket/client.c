@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sys/wait.h>
-FILE *Log;
+
 
 char r_Buf[10000];
 void get_function();
@@ -20,27 +20,27 @@ void main(int argc, char *argv[])
 
     int csd, n, ser, s, cli, cport, newsd, dd;
     char command[100];
-    Log = fopen("client.log", "a");
+   
     struct sockaddr_in servaddr, data;
-    fprintf(Log, "the control port is %s\n", argv[2]);
+    printf("the control port is %s\n", argv[2]);
     cport = atoi(argv[2]);
 
     csd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (csd < 0)
     {
-        fprintf(Log, "Error creating sockets\n");
+        printf("Error creating sockets\n");
         exit(0);
     }
     else
-        fprintf(Log, "Sockets are created\n");
+        printf("Sockets are created\n");
 
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = inet_addr(argv[1]);
     servaddr.sin_port = cport;
 
     if (connect(csd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
-        fprintf(Log, "Error in connection\n");
+        printf("Error in connection\n");
     else
         printf("Connected to server\n");
 
@@ -89,10 +89,10 @@ void get_function(int csd, struct sockaddr_in data, char *data_addr)
     int dd = socket(AF_INET, SOCK_STREAM, 0);
     if (dd < 0)
     {
-        fprintf(Log, "Error creating sockets\n");
+        printf("Error creating sockets\n");
         exit(0);
     }
-    fprintf(Log, "data socket created\n");
+    printf("data socket created\n");
 
     data.sin_family = AF_INET;
     data.sin_addr.s_addr = inet_addr(data_addr);
@@ -101,21 +101,25 @@ void get_function(int csd, struct sockaddr_in data, char *data_addr)
     if (fork() == 0)
     {
         if (connect(dd, (struct sockaddr *)&data, sizeof(data)) < 0)
-            fprintf(Log, "Error in connection of data socket\n");
+            printf( "Error in connection of data socket\n");
         else
-            fprintf(Log, "Connected to server to data socket\n");
+            printf( "Connected to server to data socket\n");
 
         if (recv(dd, r_Buf, sizeof r_Buf, 0) < 0)
         {
-            fprintf(Log, "not received the file\n");
+            printf("not received the file\n");
             close(dd);
             exit(0); // Exit the child process
         }
-
+        else
+        {
+            printf("received the file\n");
+        }
+        
         FILE *fp;
         fp = fopen(name, "w");
-        fprintf(fp, "%s\n\n", r_Buf);
-        fprintf(fp, "FILE %s RECEIVED FROM SERVER WITH PROCESS ID = %d", name, getpid());
+        fprintf(fp,"%s",r_Buf);
+        fprintf(fp,"FILE %s RECEIVED FROM SERVER WITH PROCESS ID = %d", name, getpid());
         fclose(fp);
 
         close(dd);
