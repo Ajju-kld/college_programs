@@ -109,7 +109,7 @@ void main(int argc, char *argv[])
         if (strcmp(rBuf, "close") == 0)
         {
             printf("\nclient command: %s\n", rBuf);
-            printf("\nserver clossed");
+     
             printf("\nClient disconnected and server closed\n");
             break;
         }

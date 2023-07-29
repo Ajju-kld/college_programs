@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-
 #include <arpa/inet.h>
 main()
 {
@@ -23,6 +21,12 @@ main()
     printf("\nServer ready,waiting for client....\n");
     n = sizeof client;
     confd = accept(lfd, (struct sockaddr *)&client, &n);
+    if (confd == -1)
+    {
+        printf("Error in connection\n");
+    }else
+    printf("Client successfully connected\b");
+    
    
 while (1)
 {
@@ -32,28 +36,18 @@ while (1)
     recv(confd, rBuf, sizeof rBuf, 0);
    
     printf("\nClient:%s", rBuf);
+if (strcmp(rBuf,"bye")==0)
+{
+    break;
+}
 
-    int i =0,j=strlen(rBuf);
-    while (i<j)
-    {
-      if (rBuf[i]==rBuf[j])
-      {
-        break;
-      }
-      i++;
-      j--;
-    }
-    if (i<j)
-    {
-      send(confd, "it is not paliendrome", sizeof("it is not paliendrome"), 0);
-    }
-    else
-      send(confd, "it is paliendrome", sizeof("it is paliendrome"), 0);
 
-    printf("\nServer has replied with the result");
-   
+printf("\nServer:");
+gets(sBuf);    
+send(confd,sBuf, sizeof sBuf, 0);
+    
 }   
-    printf("\n");
+    printf("\nclient disconnected \nserver closed");
 
     close(confd);
     close(lfd);
