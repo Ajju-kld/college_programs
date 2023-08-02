@@ -98,6 +98,9 @@ void main(int argc, char *argv[])
                 scanf("%d", &ack_buffer[j]);
                 printf("\n");
             }
+            else{
+                ack_buffer[j] = -1;
+            }
         }
 
         send(control_sock, ack_buffer, sizeof(int) * window_size, 0);

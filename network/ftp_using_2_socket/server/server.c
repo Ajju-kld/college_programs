@@ -8,13 +8,7 @@
 char send_buf[10000] = "";
 void send_file(FILE *fp)
 {
-    int i = 0;
-    while (!feof(fp))
-    {
-        send_buf[i] = fgetc(fp);
-        i++;
-    }
-    send_buf[i] = '\0';
+fgets(send_buf, sizeof(send_buf), fp);
 }
 
 void main(int argc, char *argv[])

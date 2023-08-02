@@ -10,23 +10,12 @@
 int packet_no = 0;
 int front = -1;
 int rear = -1;
-int packet_limit = 0;
+int packet_acknowledged = 0;
 int no_of_packets;
 struct packet_header
 {
-
     int packtno;
 };
-
-void initialize_buffer(int *buffer, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        buffer[i] = packet_no;
-        printf("%d ", buffer[i]);
-        packet_no++;
-    }
-}
 
 void enqueue(int packtno, struct packet_header *header)
 {
@@ -57,7 +46,7 @@ void dequeue()
     }
 }
 
-void initialize_buffer_with_lost(int *buffer, int size, struct packet_header *header)
+void initialize_buffer(int *buffer, int size, struct packet_header *header)
 {
     int i = 0;
     while (i < size)
@@ -89,8 +78,8 @@ void aknowledge(int *ack, int *buffer, int window_size, int fram_no, struct pack
             enqueue(buffer[i], header);
         }
         else
-            packet_limit = packet_limit + 1;
-        if (packet_limit == no_of_packets)
+            packet_acknowledged = packet_acknowledged + 1;
+        if (packet_acknowledged == no_of_packets)
             break;
     }
     if (flag == 0)
@@ -156,33 +145,30 @@ void main(int argc, char *argv[])
     send(contol_accept, &no_of_packets, sizeof(int), 0);
 
     int acknowledgtment_buf[window_size];
-    bool completed = false;
     getchar();
     int frame = 0;
-    while (!completed)
+    while (1)
     {
 
         printf("\nThe frame to be send is %d with packets :", frame);
         // initialize the send buffer
-        (front == -1)
-            ? initialize_buffer(frame_buffer, window_size)
-            : initialize_buffer_with_lost(frame_buffer, window_size, queue);
+
+        initialize_buffer(frame_buffer, window_size, queue);
         send(contol_accept, &frame_buffer, sizeof(int) * window_size, 0);
         printf("\nsending frame %d\n", frame);
 
         recv(contol_accept, &acknowledgtment_buf, sizeof(int) * window_size, 0);
         aknowledge(acknowledgtment_buf, frame_buffer, window_size, frame, queue);
 
-        printf("\nno of packets recieved at client: %d\n", packet_limit);
+        printf("\nno of packets recieved at client: %d\n", packet_acknowledged);
         frame++;
 
         // if there are nack packets available then continue to send else close connection
-        if (packet_limit == no_of_packets)
+        if (packet_acknowledged == no_of_packets)
         {
 
             printf("completed\n");
             send(contol_accept, "completed", sizeof("completed"), 0);
-            completed = true;
             break;
         }
         else
